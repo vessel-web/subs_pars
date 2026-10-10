@@ -777,7 +777,7 @@ def run_subscription(sources, remote_name, label):
     else:
         title = "CoolSubs — White"
 
-    announce = "это кароче ну подписка кароче ну так кароче подписка кароче"
+    announce = "могут быть нерабочие сервера под видом рабочих"
 
     output = add_metadata(
         output,
