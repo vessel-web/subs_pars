@@ -46,7 +46,7 @@ WHITE_SOURCES = [
     ("ring-team",   "https://enc.ring-team.casa/sub/kuajs27ilzcz"),
     ("ImSketch",    "https://raw.githubusercontent.com/ImSketch1337/vless-/refs/heads/main/BLWLservers.txt"),
     ("LSO-LTE",     "https://raw.githubusercontent.com/LSO-LinSpisokObhod/LSO-LinSpisokObhod.github.io/refs/heads/main/sub/LTE.txt"),
-("Akres-WL",    "https://hub.mos.ru/akres/vpn/-/raw/main/bwl"),
+    ("Akres-WL",    "https://hub.mos.ru/akres/vpn/-/raw/main/bwl"),
 ]
 
 COUNTRY_NAMES = {
@@ -96,6 +96,15 @@ TEST_URL = "https://www.gstatic.com/generate_204"
 PING_TIMEOUT = 5
 XRAY_WORKERS = 20
 
+BLOCKED_ASNS = {
+    "13335", "14789", "132892", "202623", "203898", "209242",
+    "395747", "400095", "402542",
+    "16509",
+    "396982",
+    "8075",
+    "20860"
+}
+
 _FLAGS = {}
 
 
@@ -143,6 +152,40 @@ def dedup_configs(configs):
             seen.add(key)
             unique.append(cfg)
     return unique
+
+
+def check_asn(host):
+    try:
+        req = urllib.request.Request(f"https://getmyip.pro/api/{host}",
+            headers={'User-Agent': 'Mozilla/5.0'})
+        resp = json.loads(urllib.request.urlopen(req, timeout=5).read())
+        asn = resp.get("asn")
+        if asn:
+            return str(asn).replace("AS", "")
+    except Exception:
+        pass
+
+    try:
+        req = urllib.request.Request(f"https://ipdata.info/{host}",
+            headers={'User-Agent': 'Mozilla/5.0'})
+        resp = json.loads(urllib.request.urlopen(req, timeout=5).read())
+        asn = resp.get("asn")
+        if asn:
+            return str(asn).replace("AS", "")
+    except Exception:
+        pass
+
+    try:
+        req = urllib.request.Request(f"http://ip-api.com/json/{host}?fields=as",
+            headers={'User-Agent': 'Mozilla/5.0'})
+        resp = json.loads(urllib.request.urlopen(req, timeout=5).read())
+        as_str = resp.get("as", "")
+        if as_str:
+            return as_str.split()[0].replace("AS", "")
+    except Exception:
+        pass
+
+    return ""
 
 
 def fetch_sub(url, retries=1):
@@ -703,6 +746,27 @@ def run_subscription(sources, remote_name, label):
     print(f"\n🔥 Рабочих через прокси: {len(working)}")
     if not working:
         print("⚠️ Ничего не прошло проверку")
+        return
+
+    print(f"\n🛡️  Фильтр по ASN (ТСПУ-блокировки)...")
+    filtered = []
+    asn_skipped = 0
+    asn_cache = {}
+    for cfg, ping in working:
+        host = cfg['host']
+        if host not in asn_cache:
+            asn_cache[host] = check_asn(host)
+        asn = asn_cache[host]
+        if asn in BLOCKED_ASNS:
+            asn_skipped += 1
+            continue
+        filtered.append((cfg, ping))
+    print(f"🚫 Убрано {asn_skipped} конфигов (Cloudflare/Amazon/Google/Microsoft)")
+    print(f"✅ Осталось: {len(filtered)}")
+    working = filtered
+
+    if not working:
+        print("⚠️ После фильтра ASN ничего не осталось")
         return
 
     random.shuffle(working)
