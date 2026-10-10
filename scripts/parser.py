@@ -24,7 +24,7 @@ BLACK_SOURCES = [
     ("igareck",     "https://raw.githack.com/igareck/vpn-configs-for-russia/main/BLACK_VLESS_RUS_mobile.txt"),
     ("Diversan",    "https://raw.githubusercontent.com/Diversan313/apex-parser/main/subs/main/alive_bl.txt"),
     ("luxxuria",    "https://github.com/luxxuria/harvester/raw/refs/heads/main/non_ru.txt"),
-    ("Akres",       "https://gitverse.ru/api/repos/Akres/VPN/raw/branch/master/all"),
+    ("Akres",       "https://hub.mos.ru/akres/vpn/-/raw/main/all"),
     ("VLESSFORU",   "https://sub.vlessfo.ru/vlessforu/working_configs.txt"),
     ("RKP",         "https://hub.mos.ru/rkp/sub-roskompozor/raw/main/bl"),
     ("Pizduk-sub",  "https://gitverse.ru/api/repos/Pizduk/PizdukVPN/raw/branch/master/sub.txt"),
@@ -46,6 +46,7 @@ WHITE_SOURCES = [
     ("ring-team",   "https://enc.ring-team.casa/sub/kuajs27ilzcz"),
     ("ImSketch",    "https://raw.githubusercontent.com/ImSketch1337/vless-/refs/heads/main/BLWLservers.txt"),
     ("LSO-LTE",     "https://raw.githubusercontent.com/LSO-LinSpisokObhod/LSO-LinSpisokObhod.github.io/refs/heads/main/sub/LTE.txt"),
+("Akres-WL",    "https://hub.mos.ru/akres/vpn/-/raw/main/bwl"),
 ]
 
 COUNTRY_NAMES = {
